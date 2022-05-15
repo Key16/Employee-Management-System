@@ -9,12 +9,11 @@ const mysql = require('mysql2');
 // const PORT = process.env.PORT || 3001;
 const app = express();
 
-
 // Express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-
+//asks the main menu of questionns
 const questions = () => {
 
     return inquirer.prompt([
@@ -27,6 +26,7 @@ const questions = () => {
         },
 
     ])
+        //diverts to differennt paths depending on choice
         .then((answer) => {
             if (answer.choice === ("View All Employees")) {
                 console.log("Here are a list of all your Employees")
@@ -73,10 +73,10 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee database.`)
 );
 
-
+//view all employees function
 
 const viewAllEmployees = () => {
-
+    //sql query that uses a join table to reference the 3 tables at once
     db.query(`SELECT
     e.first_name, 
     e.last_name, 
@@ -92,7 +92,6 @@ const viewAllEmployees = () => {
         if (err) {
             console.log(err);
         } else {
-            console.log('\n')
             console.table(result);
             questions();
         };
@@ -101,14 +100,13 @@ const viewAllEmployees = () => {
 
 }
 
-
+//view all department funnction
 const viewAllDepartments = () => {
 
     db.query(`SELECT * from department`, function (err, result) {
         if (err) {
             console.log("err");
         } else {
-            console.log('\n')
             console.table(result);
             questions();
         };
@@ -117,10 +115,9 @@ const viewAllDepartments = () => {
 
 }
 
-
+//view all role function
 const viewAllRoles = () => {
-
-
+    //sql query to join departmenn and role id, also ordered by id
     db.query(`SELECT 
     r.id,
     r.title AS Title,
@@ -132,7 +129,6 @@ const viewAllRoles = () => {
         if (err) {
             console.log("err");
         } else {
-            console.log('\n')
             console.table(result);
             questions();
         };
@@ -141,6 +137,7 @@ const viewAllRoles = () => {
 
 }
 
+//add department set of questions
 const addDepartmentQ = () => {
 
     return inquirer.prompt([
@@ -158,14 +155,16 @@ const addDepartmentQ = () => {
         },
     ])
         .then((answer) => {
+            //promise to returnn the functionn below
             addDepartment(answer);
         })
 };
 
+//add department function from the questionsn asked above
 const addDepartment = (answer) => {
 
     db.query(`INSERT INTO department (name)
-    VALUES ("?")`, answer.department, function (err, result) {
+    VALUES (?)`, answer.department, function (err, result) {
         if (err) {
             console.log("error");
         } else {
@@ -175,9 +174,13 @@ const addDepartment = (answer) => {
     });
 }
 
-let departmentList = []
-
+//add role set of questions
 const addRoleQ = () => {
+
+    //array to hold the list of departmennts
+    let departmentList = []
+
+    //to make an array as the tabble comes through as an object so that inquirer can read all the options
 
     db.query(`SELECT name from department`, function (err, result) {
         if (err) {
@@ -230,11 +233,11 @@ const addRoleQ = () => {
         })
 };
 
-
+//add role function
 const addRole = (answer) => {
 
     let depID = ""
-
+    // to returnn the id of the department based on nthe title shown in the question above
     const findDepID = () => {
         db.query(`SELECT * from department WHERE name = ?`, answer.departmentName, function (err, result) {
             if (err) {
@@ -263,10 +266,10 @@ const addRole = (answer) => {
 }
 
 
-let roleList = []
-let managerList = []
-
 const addEmployeeQ = () => {
+
+    let roleList = []
+    let employeeList = []
 
     db.query(`SELECT title FROM role`, function (err, result) {
         if (err) {
@@ -285,10 +288,12 @@ const addEmployeeQ = () => {
         } else {
             for (let y = 0; y < result.length; y++) {
                 const array = result[y].first_name + " " + result[y].last_name;
-                managerList.push(array)
+                employeeList.push(array)
             }
         };
     });
+
+    console.log("this is the employee list" + employeeList);
 
     return inquirer.prompt([
 
@@ -324,7 +329,7 @@ const addEmployeeQ = () => {
         {
             type: "list",
             name: "managerName",
-            choices: managerList,
+            choices: employeeList,
             message: "Who is their manager?",
         },
     ])
@@ -391,7 +396,107 @@ const addEmployee = (answer) => {
 
 
 
+const updateEmployeeQ = () => {
 
+    let roleList = []
+    let empList = []
+
+    db.query(`SELECT * FROM employee`, function (err, result) {
+        if (err) {
+            console.log(error);
+        } else {
+            for (let y = 0; y < result.length; y++) {
+                const array = result[y].first_name + " " + result[y].last_name;
+                empList.push(array)
+            }
+        };
+    });
+
+    db.query(`SELECT title FROM role`, function (err, result) {
+        if (err) {
+            console.log("error");
+        } else {
+            for (let y = 0; y < result.length; y++) {
+                const array = result[y].title;
+                roleList.push(array)
+            }
+        };
+    });
+
+
+    return inquirer.prompt([
+
+        {
+            type: "list",
+            name: "employee",
+            choices: empList,
+            message: "Who's role are you looking to update?",
+        },
+        {
+            type: "list",
+            name: "role",
+            choices: roleList,
+            message: "Which role are you looking to assign them to?",
+        },
+    ])
+        .then((answer) => {
+            console.log("finish update employee questions")
+            updateEmployee(answer);
+        })
+};
+
+const updateEmployee = (answer) => {
+
+    let roleID = ""
+    let managerID = ""
+
+    const findRoleID = () => {
+        db.query(`SELECT * from role WHERE title = "${answer.role}"`, function (err, result) {
+            console.log(result)
+            if (err) {
+                console.log(err);
+            } else {
+                roleID = result[0].id;
+                findManagerID();
+            }
+
+        });
+    }
+
+    findRoleID();
+
+    const findManagerID = () => {
+
+        let mName = answer.employeeList.split(' ')
+        console.log(mName)
+
+
+        db.query(`SELECT * from employee WHERE first_name = "${mName[0]}" AND last_name = "${mName[1]}"`, function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                managerID = result[0].id;
+                console.log("the manager ID is" + managerID)
+                insertUpdatedEmployee(answer);
+            }
+
+        });
+    }
+
+
+    const insertUpdatedEmployee = (answer) => {
+        db.query(`UPDATE employee
+        SET role_id= ${roleID}
+        WHERE first_name = "${mName[0]}" AND last_name = "${mName[1]}`, function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`Updated ${answer.employeeList} to the database. View all Employees to see a list of all Employees`)
+                questions();
+            };
+        });
+    }
+}
 
 
 
