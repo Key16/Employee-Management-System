@@ -265,11 +265,13 @@ const addRole = (answer) => {
     }
 }
 
-
+//add employee questionsn
 const addEmployeeQ = () => {
 
     let roleList = []
     let employeeList = []
+
+    //to create the array used in the questionns for inquirer
 
     db.query(`SELECT title FROM role`, function (err, result) {
         if (err) {
@@ -335,7 +337,6 @@ const addEmployeeQ = () => {
     ])
         .then((answer) => {
             console.log("finish employee questions")
-            console.log("Role title is " + answer.title)
             addEmployee(answer);
         })
 };
