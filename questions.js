@@ -43,6 +43,12 @@ const questions = () => {
             } else if (answer.choice === "Add a Role") {
                 console.log("Add Role Chosen")
                 return addRoleQ();
+            } else if (answer.choice === "Add an Employee") {
+                console.log("Add Role Chosen")
+                return addEmployeeQ();
+            } else if (answer.choice === "Update an Employee Role") {
+                console.log("Add Role Chosen")
+                return updateEmployeeQ();
             } else {
                 console.log("Thank you for using EM, see you next time. ")
             }
@@ -229,7 +235,7 @@ const addRole = (answer) => {
 
     let depID = ""
 
-    const nameOfDep = () => {
+    const findDepID = () => {
         db.query(`SELECT * from department WHERE name = ?`, answer.departmentName, function (err, result) {
             if (err) {
                 console.log(err);
@@ -241,7 +247,7 @@ const addRole = (answer) => {
         });
     }
 
-    nameOfDep();
+    findDepID();
 
     const insertRole = (answer) => {
         db.query(`INSERT INTO role (title, salary, department_id)
@@ -255,6 +261,138 @@ const addRole = (answer) => {
         });
     }
 }
+
+
+let roleList = []
+let managerList = []
+
+const addEmployeeQ = () => {
+
+    db.query(`SELECT title FROM role`, function (err, result) {
+        if (err) {
+            console.log("error");
+        } else {
+            for (let y = 0; y < result.length; y++) {
+                const array = result[y].title;
+                roleList.push(array)
+            }
+        };
+    });
+
+    db.query(`SELECT first_name, last_name FROM employee`, function (err, result) {
+        if (err) {
+            console.log("error");
+        } else {
+            for (let y = 0; y < result.length; y++) {
+                const array = result[y].first_name + " " + result[y].last_name;
+                managerList.push(array)
+            }
+        };
+    });
+
+    return inquirer.prompt([
+
+        {
+            type: 'input',
+            name: 'firstName',
+            message: 'What is the first name of the employee?',
+            validate(answer) {
+                if (!answer) {
+                    return "Name can not be empty!"
+                }
+                return true
+            }
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: 'What is the last name of the employee?',
+            validate(answer) {
+                if (!answer) {
+                    return "Name can not be empty!"
+                }
+                return true
+            }
+        },
+
+        {
+            type: "list",
+            name: "title",
+            choices: roleList,
+            message: "Which role is this under?",
+        },
+        {
+            type: "list",
+            name: "managerName",
+            choices: managerList,
+            message: "Who is their manager?",
+        },
+    ])
+        .then((answer) => {
+            console.log("finish employee questions")
+            console.log("Role title is " + answer.title)
+            addEmployee(answer);
+        })
+};
+
+
+const addEmployee = (answer) => {
+
+    let roleID = ""
+    let managerID = ""
+
+    const findRoleID = () => {
+        db.query(`SELECT * from role WHERE title = "${answer.title}"`, function (err, result) {
+            console.log(result)
+            if (err) {
+                console.log(err);
+            } else {
+                roleID = result[0].id;
+                findManagerID();
+            }
+
+        });
+    }
+
+    findRoleID();
+
+    const findManagerID = () => {
+
+        let mName = answer.managerName.split(' ')
+        console.log(mName)
+
+
+        db.query(`SELECT * from employee WHERE first_name = "${mName[0]}" AND last_name = "${mName[1]}"`, function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                managerID = result[0].id;
+                console.log("the manager ID is" + managerID)
+                insertEmployee(answer);
+            }
+
+        });
+    }
+
+
+    const insertEmployee = (answer) => {
+        db.query(`
+        INSERT INTO employee(first_name, last_name, role_id, manager_id)
+        VALUES("${answer.firstName}", "${answer.lastName}", ${roleID}, ${managerID})`, function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`Added ${answer.firstName} ${answer.lastName} to the database. View all Employees to see a list of all Employees`)
+                questions();
+            };
+        });
+    }
+}
+
+
+
+
+
 
 
 module.exports = questions
