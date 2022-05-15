@@ -3,8 +3,6 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const questions = require('./questions');
-const inquirer = require('inquirer');
-
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -49,8 +47,11 @@ const viewAllEmployees = () => {
             console.table(result);
         };
     });
-    questions();
+    // questions();
 }
+
+//IGNORE ALL BELOW 
+
 // Create a movie
 app.post('/api/new-movie', ({ body }, res) => {
     const sql = `INSERT INTO movies (movie_name)
