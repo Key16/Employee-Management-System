@@ -44,7 +44,7 @@ const questions = () => {
                 console.log("Add Role Chosen")
                 return addRoleQ();
             } else if (answer.choice === "Add an Employee") {
-                console.log("Add Role Chosen")
+                console.log("Add Employee Chosen")
                 return addEmployeeQ();
             } else if (answer.choice === "Update an Employee Role") {
                 console.log("Add Role Chosen")
@@ -404,7 +404,7 @@ const updateEmployeeQ = () => {
 
     db.query(`SELECT * FROM employee`, function (err, result) {
         if (err) {
-            console.log(error);
+            console.log(err);
         } else {
             for (let y = 0; y < result.length; y++) {
                 const array = result[y].first_name + " " + result[y].last_name;
