@@ -258,7 +258,7 @@ const addRole = (answer) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(`Added ${answer.title} to the database. View all Roles to see a list of all departments`)
+                console.log(`Added ${answer.title} to the database. View all Roles to see a list of all roles`)
                 questions();
             };
         });
@@ -295,7 +295,6 @@ const addEmployeeQ = () => {
         };
     });
 
-    console.log("this is the employee list" + employeeList);
 
     return inquirer.prompt([
 
