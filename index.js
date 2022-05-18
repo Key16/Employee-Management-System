@@ -20,7 +20,7 @@ const init = () => {
         | ||_|| ||   _   || | |   ||   _   ||   |_| ||   |___ |   |  | |        
         |_|   |_||__| |__||_|  |__||__| |__||_______||_______||___|  |_|
 
-Welcome to the Employee Management System. \n\nMy name is EM.
+Welcome to the Wizardry Employee Management System. \n\nMy name is EM.
 `)
     questions()
 };
