@@ -2,14 +2,21 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ## Description
-Welcome to the wizardry employee management system. This is the state of the art new muggle technology, creating the very first Auror Intelligence (AI) called EM. EM will help you keep track of all your wizards and witches, including their roles and departments. You can even add new roles and departments as the wizarding world constantly expands on new discoveries and assign new employees to those very new roles.
+Welcome to the wizardry employee management system. 
+
+This is the state of the art new muggle technology, creating the very first Auror Intelligence (AI) called EM. 
+
+EM will help you keep track of all your wizards and witches, including their roles and departments. You can even add new roles and departments as the wizarding world constantly expands on new discoveries and assign new employees to those very new roles.
+
+Please visit [here](https://www.loom.com/share/8f04ffc1fa1a4cbabd0d2b23e7614443) for a video walkthrough
+
+
 ## Table of Contents
 
 * [Installation](#installation)
 * [Usage](#usage)
 * [Licenses](#licenses)
 * [Contributing](#contributing)
-* [Tests](#tests)
 * [Questions](#questions)
 
 ## Installation 
@@ -30,11 +37,7 @@ This project is under the MIT License.
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. 
 
 I wanted to make this fun with a HP theme, any ideas very welcome.
-## Tests 
-To run tests, use the following command:
-```
-na
-```
+
 
 ## Questions
 
