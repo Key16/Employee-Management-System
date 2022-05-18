@@ -10,6 +10,8 @@ EM will help you keep track of all your wizards and witches, including their rol
 
 Please visit [here](https://www.loom.com/share/8f04ffc1fa1a4cbabd0d2b23e7614443) for a video walkthrough
 
+![EMscreenshot](./assets/EMscreenshot.png)
+
 
 ## Table of Contents
 
